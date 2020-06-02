@@ -1,0 +1,23 @@
+apiVersion: skaffold/v2alpha3
+kind: Config
+deploy:
+  kubectl:
+    manifests:
+      # This is showing which files to monitor
+      - ./infra/k8s/*
+build:
+  # Don't push to dockerhub when building locally
+  # local:
+  # push: false
+  googleCloudBuild:
+    projectId: gt-project-246100
+  artifacts:
+    - image: us.gcr.io/gt-project-246100/auth
+      context: auth
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          # Note that only things listed here will automatically update the prod code
+          - src: 'src/**/*.ts'
+            dest: .

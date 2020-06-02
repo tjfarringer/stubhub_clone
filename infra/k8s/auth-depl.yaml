@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth
+  template:
+    metadata:
+      labels:
+        app: auth
+    spec:
+      containers:
+        - name: auth
+          image: us.gcr.io/gt-project-246100/auth
+        # Note this was the local image:
+        # image: tfarringer/auth
+---
+# Defining a service here.
+# This allows us to access the deployment defined above.
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-srv
+spec:
+  # Note that the default service is a defaultIP service
+  selector:
+    app: auth
+  ports:
+    - name: auth
+      protocol: TCP
+      port: 3000
+      targetPort: 3000

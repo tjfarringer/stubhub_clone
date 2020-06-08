@@ -1,18 +1,28 @@
-import express from 'express';
-import { json } from 'body-parser';
-import { currentUserRouter } from './routes/current-user';
-import { signinRouter } from './routes/signin';
-import { signoutRouter } from './routes/signout';
-import { signupRouter } from './routes/signup';
+import mongoose from 'mongoose';
+import { app } from './app';
 
-const app = express();
-app.use(json());
+const start = async () => {
+  // first argument for the connect fncn is the url to connect to
+  // Since we are running mongodb as a pod, we should connect via the clusterIP serv
+  // <url>:<portId>/<db-name>
 
-app.use(currentUserRouter);
-app.use(signinRouter);
-app.use(signoutRouter);
-app.use(signupRouter);
+  if (!process.env.JWT_KEY) {
+    throw new Error('JWT_KEY must be defined');
+  }
+  try {
+    await mongoose.connect('mongodb://auth-mongo-srv:27017/auth', {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      useCreateIndex: true,
+    });
+    console.log('connected to mongodb');
+  } catch (err) {
+    console.error(err);
+  }
 
-app.listen(3000, () => {
-  console.log('Listening on port 3000!!!');
-});
+  app.listen(3000, () => {
+    console.log('Listening on port 3000!!');
+  });
+};
+
+start();

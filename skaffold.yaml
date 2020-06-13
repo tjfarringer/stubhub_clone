@@ -21,3 +21,12 @@ build:
           # Note that only things listed here will automatically update the prod code
           - src: 'src/**/*.ts'
             dest: .
+    - image: us.gcr.io/gt-project-246100/client
+      context: client
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          # Note that only things listed here will automatically update the prod code
+          - src: '**/*.j s'
+            dest: .
